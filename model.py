@@ -1559,7 +1559,8 @@ class MaskRCNN(nn.Module):
         exlude: list of layer names to excluce
         """
         if os.path.exists(filepath):
-            self.load_state_dict(torch.load(filepath))
+            state_dict = torch.load(filepath)
+            self.load_state_dict(state_dict, strict=False)
         else:
             print("Weight file not found ...")
 
