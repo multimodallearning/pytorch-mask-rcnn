@@ -1817,6 +1817,8 @@ class MaskRCNN(nn.Module):
         loss_mrcnn_mask_sum = 0
         step = 0
 
+        optimizer.zero_grad()
+
         for inputs in datagenerator:
             batch_count += 1
 
@@ -1857,12 +1859,11 @@ class MaskRCNN(nn.Module):
             loss = rpn_class_loss + rpn_bbox_loss + mrcnn_class_loss + mrcnn_bbox_loss + mrcnn_mask_loss
 
             # Backpropagation
-            if (batch_count % self.config.BATCH_SIZE) == 0:
-                optimizer.zero_grad()
             loss.backward()
             torch.nn.utils.clip_grad_norm(self.parameters(), 5.0)
             if (batch_count % self.config.BATCH_SIZE) == 0:
                 optimizer.step()
+                optimizer.zero_grad()
                 batch_count = 0
 
             # Progress
